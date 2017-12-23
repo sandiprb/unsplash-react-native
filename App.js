@@ -1,8 +1,9 @@
 import React from 'react'
-import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import { SearchBar, Button, WhiteSpace, WingBlank, ActivityIndicator } from 'antd-mobile'
 import AutoHeightImage from 'react-native-auto-height-image'
 import { getPhotoByKeyword } from './Unsplash'
+import { ImageGrid } from './components/ImageGrid'
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
 
@@ -10,27 +11,30 @@ export default class App extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			query: 'india',
 			photos: [],
+			query: 'india',
 			isLoading: false,
+			pagesFetched: 0,
 		}
 	}
 
-	getPhotos = async query => {
+	componentDidMount() {
+		this.getPhotos(this.state.query)
+	}
+
+	getPhotos = async () => {
 		this.setState({ isLoading: true })
-		const photos = await getPhotoByKeyword(query)
-		this.setState({ photos, isLoading: false })
+		const { pagesFetched, photos, query } = this.state
+		const nextPage = pagesFetched + 1
+		const fetchedPhotos = await getPhotoByKeyword(query, nextPage)
+		let latestPhotos = [...photos, ...fetchedPhotos]
+		this.setState({ photos: latestPhotos, isLoading: false, pagesFetched: nextPage })
 	}
 
 	render() {
 		const { query, photos, isLoading } = this.state
-
-		const images = photos.length
-			? photos.map((obj, index) => {
-					const { urls: { small } } = obj
-					return <AutoHeightImage key={`${small}${index}`} height={33} imageURL={small} />
-				})
-			: null
+		const showLoadMore = photos.length
+		console.log(photos.length)
 
 		return (
 			<View style={styles.container}>
@@ -43,10 +47,15 @@ export default class App extends React.Component {
 					onChange={query => {
 						this.setState({ query })
 					}}
-					onSubmit={() => this.getPhotos(query)}
+					onSubmit={() => this.getPhotos()}
 				/>
 				<WingBlank />
-				<ScrollView>{images}</ScrollView>
+				<ImageGrid photos={photos} />
+				{showLoadMore ? (
+					<Button type="ghost" onClick={this.getPhotos} inline style={styles.btnLoadMore}>
+						LOAD MORE
+					</Button>
+				) : null}
 			</View>
 		)
 	}
@@ -57,10 +66,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		marginTop: 30,
 		backgroundColor: '#fff',
-		// alignItems: 'center',
-		// justifyContent: 'center',
 	},
-	wrapper: {
-		padding: 20,
+	btnLoadMore: {
+		margin: 8,
 	},
 })

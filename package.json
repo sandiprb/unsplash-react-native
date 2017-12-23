@@ -32,6 +32,7 @@
     "expo": "^23.0.4",
     "react": "16.0.0",
     "react-native": "0.50.3",
+    "react-native-auto-height-image": "^0.3.4",
     "unsplash-js": "^4.8.0"
   }
 }

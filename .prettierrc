@@ -8,11 +8,4 @@ jsxBracketSameLine: false
 parser: typescript
 singleQuote: true
 requirePragma: false
-overrides:
-- files: "*.css"
-  options:
-    parser: css
-    singleQuote: false
-    tabWidth: 4
-    useTabs: false
-    semi: true
+
