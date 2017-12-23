@@ -1,52 +1,66 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { SearchBar, Button, WhiteSpace, WingBlank } from 'antd-mobile';
-import { getPhotoByKeyword } from "./Unsplash";
+import React from 'react'
+import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native'
+import { SearchBar, Button, WhiteSpace, WingBlank, ActivityIndicator } from 'antd-mobile'
+import AutoHeightImage from 'react-native-auto-height-image'
+import { getPhotoByKeyword } from './Unsplash'
+
+const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
 
 export default class App extends React.Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			query: 'india',
+			photos: [],
+			isLoading: false,
+		}
+	}
 
-  constructor(props){
-    super(props)
-    this.state = {
-      query: 'Ssandip',
-      photos: [],
-    }
-  }
+	getPhotos = async query => {
+		this.setState({ isLoading: true })
+		const photos = await getPhotoByKeyword(query)
+		this.setState({ photos, isLoading: false })
+	}
 
-  componentDidMount() {
-    // const photos = getPhotoByKeyword('man')
-    this.getPhotos('man')
-  }
+	render() {
+		const { query, photos, isLoading } = this.state
 
-  getPhotos = async (query) =>  {
-      const photos = await getPhotoByKeyword(query)
-      this.setState({photos})
-  }
+		const images = photos.length
+			? photos.map((obj, index) => {
+					const { urls: { small } } = obj
+					return <AutoHeightImage key={`${small}${index}`} height={33} imageURL={small} />
+				})
+			: null
 
-  render() {
-    console.log(this.state.photos)
-    return (
-      <View style={styles.container}>
-        {/* <View style={styles.wrapper}> */}
-          <SearchBar placeholder="Search..." value={this.state.query} cancelText={'Cancel'} maxLength={8} onChange={(query) => {this.setState({query})}} onSubmit={value => console.log(value, 'onSubmit')}/>
-          <WingBlank>
-            {/* <Button onClick={this.handleClick} type='primary' style={{marginTop: 16}}>Search</Button> */}
-          </WingBlank>
-          {/* </View> */}
-      </View>
-    );
-  }
+		return (
+			<View style={styles.container}>
+				<ActivityIndicator toast text={`Loading...`} animating={isLoading} />
+				<SearchBar
+					placeholder="Search..."
+					value={query}
+					cancelText={'Cancel'}
+					maxLength={8}
+					onChange={query => {
+						this.setState({ query })
+					}}
+					onSubmit={() => this.getPhotos(query)}
+				/>
+				<WingBlank />
+				<ScrollView>{images}</ScrollView>
+			</View>
+		)
+	}
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 30,
-    backgroundColor: '#fff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  },
-  wrapper: {
-    padding: 20,
-  }
-});
+	container: {
+		flex: 1,
+		marginTop: 30,
+		backgroundColor: '#fff',
+		// alignItems: 'center',
+		// justifyContent: 'center',
+	},
+	wrapper: {
+		padding: 20,
+	},
+})

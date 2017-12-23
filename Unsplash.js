@@ -11,13 +11,11 @@ const unsplash = new Unsplash({
   callbackUrl: CALLBACK_URL,
 });
 
-const searchPhoto = async(query) => {
-   return await unsplash.search.photos(query, 1)
-}
 
 export const getPhotoByKeyword = async (keyword) => {
     try {
-        const data = await searchPhoto('man')
+            const data = await unsplash.search.photos(keyword, 1)
+
         const {_bodyInit} = data
         const {results} = JSON.parse(_bodyInit)
         return results
