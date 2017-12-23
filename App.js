@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native'
 import { SearchBar, Button, WhiteSpace, WingBlank, ActivityIndicator } from 'antd-mobile'
 import AutoHeightImage from 'react-native-auto-height-image'
 import { getPhotoByKeyword } from './Unsplash'
@@ -12,9 +12,10 @@ export default class App extends React.Component {
 		super(props)
 		this.state = {
 			photos: [],
-			query: 'india',
+			query: '',
+			currentQuery: '',
 			isLoading: false,
-			pagesFetched: 0,
+			nextPage: 1,
 		}
 	}
 
@@ -23,18 +24,27 @@ export default class App extends React.Component {
 	}
 
 	getPhotos = async () => {
-		this.setState({ isLoading: true })
-		const { pagesFetched, photos, query } = this.state
-		const nextPage = pagesFetched + 1
+		const {query, currentQuery } = this.state
+		await this.setState({ isLoading: true })
+		if(query != currentQuery) {
+			await this.setState({photos: [], nextPage: 1})
+		}
+		const {photos, nextPage} = this.state
 		const fetchedPhotos = await getPhotoByKeyword(query, nextPage)
 		let latestPhotos = [...photos, ...fetchedPhotos]
-		this.setState({ photos: latestPhotos, isLoading: false, pagesFetched: nextPage })
+		this.setState({ photos: latestPhotos, isLoading: false,currentQuery: query })
+	}
+
+	handleLoadMore = async () => {
+		const { nextPage } = this.state
+		await this.setState({nextPage: nextPage + 1})
+		this.getPhotos()
 	}
 
 	render() {
-		const { query, photos, isLoading } = this.state
-		const showLoadMore = photos.length
-		console.log(photos.length)
+		const { query, photos, isLoading, currentQuery } = this.state
+		const photosLoaded = photos.length
+
 
 		return (
 			<View style={styles.container}>
@@ -50,9 +60,10 @@ export default class App extends React.Component {
 					onSubmit={() => this.getPhotos()}
 				/>
 				<WingBlank />
+				{photosLoaded ? <Text style={styles.loadedText}> {`Found ${photos.length} results for ${currentQuery}.`} </Text> : null}
 				<ImageGrid photos={photos} />
-				{showLoadMore ? (
-					<Button type="ghost" onClick={this.getPhotos} inline style={styles.btnLoadMore}>
+				{photosLoaded ? (
+					<Button type="ghost" onClick={this.handleLoadMore} inline style={styles.btnLoadMore}>
 						LOAD MORE
 					</Button>
 				) : null}
@@ -66,6 +77,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		marginTop: 30,
 		backgroundColor: '#fff',
+	},
+	loadedText: {
+		fontSize: 14,
+		margin: 4,
+		fontWeight: 'bold',
 	},
 	btnLoadMore: {
 		margin: 8,

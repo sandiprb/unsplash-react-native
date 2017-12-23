@@ -15,7 +15,6 @@ export const getPhotoByKeyword = async (keyword, page) => {
 		const data = await unsplash.search.photos(keyword, page)
 		const { _bodyInit } = data
 		const { results } = JSON.parse(_bodyInit)
-		console.log(results)
 		return results
 	} catch (error) {
 		console.error(error)
