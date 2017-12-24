@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native'
 import { SearchBar, Button, WhiteSpace, WingBlank, ActivityIndicator } from 'antd-mobile'
 import AutoHeightImage from 'react-native-auto-height-image'
-import { getPhotoByKeyword } from './Unsplash'
+import { getPhotoByKeyword } from './utils/Unsplash'
 import { ImageGrid } from './components/ImageGrid'
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
@@ -24,27 +24,26 @@ export default class App extends React.Component {
 	}
 
 	getPhotos = async () => {
-		const {query, currentQuery } = this.state
+		const { query, currentQuery } = this.state
 		await this.setState({ isLoading: true })
-		if(query != currentQuery) {
-			await this.setState({photos: [], nextPage: 1})
+		if (query != currentQuery) {
+			await this.setState({ photos: [], nextPage: 1 })
 		}
-		const {photos, nextPage} = this.state
+		const { photos, nextPage } = this.state
 		const fetchedPhotos = await getPhotoByKeyword(query, nextPage)
 		let latestPhotos = [...photos, ...fetchedPhotos]
-		this.setState({ photos: latestPhotos, isLoading: false,currentQuery: query })
+		this.setState({ photos: latestPhotos, isLoading: false, currentQuery: query })
 	}
 
 	handleLoadMore = async () => {
 		const { nextPage } = this.state
-		await this.setState({nextPage: nextPage + 1})
+		await this.setState({ nextPage: nextPage + 1 })
 		this.getPhotos()
 	}
 
 	render() {
 		const { query, photos, isLoading, currentQuery } = this.state
 		const photosLoaded = photos.length
-
 
 		return (
 			<View style={styles.container}>
@@ -60,7 +59,9 @@ export default class App extends React.Component {
 					onSubmit={() => this.getPhotos()}
 				/>
 				<WingBlank />
-				{photosLoaded ? <Text style={styles.loadedText}> {`Found ${photos.length} results for ${currentQuery}.`} </Text> : null}
+				{photosLoaded ? (
+					<Text style={styles.loadedText}> {`Found ${photos.length} results for ${currentQuery}.`} </Text>
+				) : null}
 				<ImageGrid photos={photos} />
 				{photosLoaded ? (
 					<Button type="ghost" onClick={this.handleLoadMore} inline style={styles.btnLoadMore}>
