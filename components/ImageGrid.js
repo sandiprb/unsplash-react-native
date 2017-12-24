@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, Image, Text, StyleSheet, ScrollView, Dimensions } from 'react-native'
-
-const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
+import { windowWidth } from '../utils/constants'
 
 export const ImageGrid = ({ photos = [] }) => {
 	const styles = ImageGridStyles
@@ -37,7 +36,7 @@ const ImageGridStyles = StyleSheet.create({
 	},
 
 	imgWrapper: {
-		flexBasis: WIDTH / 3 - 12,
+		flexBasis: windowWidth / 3 - 12,
 		marginBottom: 8,
 	},
 	img: {

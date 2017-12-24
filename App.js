@@ -1,13 +1,15 @@
 import React from 'react'
-import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image, TouchableHighlight } from 'react-native'
+import { StackNavigator } from 'react-navigation'
+
 import { SearchBar, Button, WhiteSpace, WingBlank, ActivityIndicator } from 'antd-mobile'
 import AutoHeightImage from 'react-native-auto-height-image'
+
 import { getPhotoByKeyword } from './utils/Unsplash'
 import { ImageGrid } from './components/ImageGrid'
+import { windowHeight, windowWidth } from './utils/constants'
 
-const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
-
-export default class App extends React.Component {
+class Home extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -40,6 +42,8 @@ export default class App extends React.Component {
 		this.setState({ nextPage: nextPage + 1 })
 		this.getPhotos()
 	}
+
+	handleImageClick = imgSrc => {}
 
 	render() {
 		const { query, photos, isLoading, currentQuery, isNextPageAvailable } = this.state
@@ -98,3 +102,60 @@ const styles = StyleSheet.create({
 		margin: 8,
 	},
 })
+
+const ImageViewer = ({ navigation }) => {
+	/* Image Preview Mode on Image Click */
+}
+
+const SplashScreen = ({ navigation }) => {
+	const { textName, logo } = SplashScreenStyles
+	return (
+		<View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', height: windowHeight }}>
+			<TouchableHighlight onPress={() => navigation.navigate('Home')}>
+				<View>
+					<Image
+						source={{
+							url:
+								'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Logo_of_Unsplash.svg/2000px-Logo_of_Unsplash.svg.png',
+						}}
+						style={logo}
+					/>
+					<Text style={textName}>Unsplash</Text>
+				</View>
+			</TouchableHighlight>
+		</View>
+	)
+}
+
+const SplashScreenStyles = StyleSheet.create({
+	logo: {
+		width: 100,
+		height: 100,
+		marginLeft: 'auto',
+		marginRight: 'auto',
+	},
+	textName: {
+		textAlign: 'center',
+		fontSize: 44,
+		fontWeight: 'bold',
+	},
+})
+
+const RootNavigator = StackNavigator({
+	SplashScreen: {
+		screen: SplashScreen,
+		navigationOptions: ({ navigation }) => ({
+			header: null,
+			headerMode: 'none',
+		}),
+	},
+	Home: {
+		screen: Home,
+		navigationOptions: ({ navigation }) => ({
+			header: null,
+			headerMode: 'none',
+		}),
+	},
+})
+
+export default RootNavigator
