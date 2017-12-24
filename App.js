@@ -11,38 +11,38 @@ export default class App extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			photos: [],
-			query: '',
+			isNextPageAvailable: true,
 			currentQuery: '',
 			isLoading: false,
 			nextPage: 1,
+			photos: [],
+			query: '',
 		}
 	}
 
-	componentDidMount() {
-		this.getPhotos(this.state.query)
-	}
+	componentDidMount() {}
 
 	getPhotos = async () => {
 		const { query, currentQuery } = this.state
-		await this.setState({ isLoading: true })
+		this.setState({ isLoading: true })
 		if (query != currentQuery) {
-			await this.setState({ photos: [], nextPage: 1 })
+			this.setState({ photos: [], nextPage: 1 })
 		}
 		const { photos, nextPage } = this.state
-		const fetchedPhotos = await getPhotoByKeyword(query, nextPage)
-		let latestPhotos = [...photos, ...fetchedPhotos]
-		this.setState({ photos: latestPhotos, isLoading: false, currentQuery: query })
+		const { fetchedPhotos, total_pages } = await getPhotoByKeyword(query, nextPage)
+		const latestPhotos = [...photos, ...fetchedPhotos]
+		const isNextPageAvailable = total_pages > nextPage
+		this.setState({ photos: latestPhotos, isLoading: false, currentQuery: query, isNextPageAvailable })
 	}
 
 	handleLoadMore = async () => {
 		const { nextPage } = this.state
-		await this.setState({ nextPage: nextPage + 1 })
+		this.setState({ nextPage: nextPage + 1 })
 		this.getPhotos()
 	}
 
 	render() {
-		const { query, photos, isLoading, currentQuery } = this.state
+		const { query, photos, isLoading, currentQuery, isNextPageAvailable } = this.state
 		const photosLoaded = photos.length
 
 		return (
@@ -58,14 +58,24 @@ export default class App extends React.Component {
 					}}
 					onSubmit={() => this.getPhotos()}
 				/>
+
 				<WingBlank />
+
 				{photosLoaded ? (
 					<Text style={styles.loadedText}> {`Found ${photos.length} results for ${currentQuery}.`} </Text>
 				) : null}
-				<ImageGrid photos={photos} />
+
+				{photosLoaded ? <ImageGrid photos={photos} /> : null}
+
 				{photosLoaded ? (
-					<Button type="ghost" onClick={this.handleLoadMore} inline style={styles.btnLoadMore}>
-						LOAD MORE
+					<Button
+						type="ghost"
+						disabled={!isNextPageAvailable}
+						onClick={this.handleLoadMore}
+						inline
+						style={styles.btnLoadMore}
+					>
+						{isNextPageAvailable ? 'LOAD MORE' : "That's all folks!"}
 					</Button>
 				) : null}
 			</View>
