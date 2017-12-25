@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native'
 import { windowHeight, windowWidth } from '../utils/constants'
 
 const SplashScreen = ({ navigation }) => {
+	console.log(navigation)
 	const { textName, logo } = SplashScreenStyles
 	return (
 		<View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', height: windowHeight }}>

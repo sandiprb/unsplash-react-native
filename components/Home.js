@@ -1,10 +1,9 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-
+import { StyleSheet, Text, View, Alert } from 'react-native'
 import { SearchBar, Button, WhiteSpace, WingBlank, ActivityIndicator } from 'antd-mobile'
 import { ImageGrid } from './ImageGrid'
-
 import { getPhotoByKeyword } from '../utils/Unsplash'
+import { saveToCameraRoll } from '../utils/index'
 
 export default class Home extends React.Component {
 	constructor(props) {
@@ -15,11 +14,13 @@ export default class Home extends React.Component {
 			isLoading: false,
 			nextPage: 1,
 			photos: [],
-			query: '',
+			query: 'Mumbai',
 		}
 	}
 
-	componentDidMount() {}
+	componentDidMount() {
+		this.getPhotos()
+	}
 
 	getPhotos = async () => {
 		const { query, currentQuery } = this.state
@@ -42,7 +43,15 @@ export default class Home extends React.Component {
 
 	handleImageClick = imgSrc => {
 		const { navigation } = this.props
-		navigation.navigate('ImageViewer', imgSrc)
+		const props = {
+			imgSrc,
+			onDownloadClick: this.handleDownloadClick,
+		}
+		navigation.navigate('ImageViewer', { ...props })
+	}
+
+	handleDownloadClick = fullURI => {
+		saveToCameraRoll(fullURI)
 	}
 
 	render() {
