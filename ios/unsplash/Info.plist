@@ -6,6 +6,8 @@
 	<string>en</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>View Camera Roll</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Allow Camera access to save photos to Camera Roll</string>
 	<key>CFBundleDisplayName</key>
 	<string>Unsplash</string>
 	<key>CFBundleExecutable</key>
