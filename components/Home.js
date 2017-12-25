@@ -24,20 +24,20 @@ export default class Home extends React.Component {
 
 	getPhotos = async () => {
 		const { query, currentQuery } = this.state
-		this.setState({ isLoading: true })
+		await this.setState({ isLoading: true })
 		if (query != currentQuery) {
-			this.setState({ photos: [], nextPage: 1 })
+			await this.setState({ photos: [], nextPage: 1 })
 		}
 		const { photos, nextPage } = this.state
 		const { fetchedPhotos, total_pages } = await getPhotoByKeyword(query, nextPage)
 		const latestPhotos = [...photos, ...fetchedPhotos]
 		const isNextPageAvailable = total_pages > nextPage
-		this.setState({ photos: latestPhotos, isLoading: false, currentQuery: query, isNextPageAvailable })
+		await this.setState({ photos: latestPhotos, isLoading: false, currentQuery: query, isNextPageAvailable })
 	}
 
 	handleLoadMore = async () => {
 		const { nextPage } = this.state
-		this.setState({ nextPage: nextPage + 1 })
+		await this.setState({ nextPage: nextPage + 1 })
 		this.getPhotos()
 	}
 
@@ -78,18 +78,13 @@ export default class Home extends React.Component {
 					<Text style={styles.loadedText}>{`Found ${photos.length} results for ${currentQuery}`}</Text>
 				) : null}
 
-				{photosLoaded ? <ImageGrid photos={photos} onImageClick={this.handleImageClick} /> : null}
-
 				{photosLoaded ? (
-					<Button
-						type="ghost"
-						disabled={!isNextPageAvailable}
-						onClick={this.handleLoadMore}
-						inline
-						style={styles.btnLoadMore}
-					>
-						{isNextPageAvailable ? 'LOAD MORE' : "That's all folks!"}
-					</Button>
+					<ImageGrid
+						photos={photos}
+						isNextPageAvailable={isNextPageAvailable}
+						onImageClick={this.handleImageClick}
+						onLoadMoreClick={this.handleLoadMore}
+					/>
 				) : null}
 			</View>
 		)
@@ -106,8 +101,5 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		margin: 4,
 		fontWeight: 'bold',
-	},
-	btnLoadMore: {
-		margin: 8,
 	},
 })

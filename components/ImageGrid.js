@@ -2,8 +2,9 @@ import React from 'react'
 import { View, Image, Text, StyleSheet, ScrollView, Dimensions, TouchableHighlight } from 'react-native'
 import { windowWidth, windowHeight } from '../utils/constants'
 import { getAspectRatioHeight } from '../utils/index'
+import { Button } from 'antd-mobile'
 
-export const ImageGrid = ({ navigation, photos = [], onImageClick }) => {
+export const ImageGrid = ({ navigation, photos = [], onImageClick, isNextPageAvailable, onLoadMoreClick }) => {
 	const styles = ImageGridStyles
 	const images =
 		photos.length &&
@@ -15,11 +16,13 @@ export const ImageGrid = ({ navigation, photos = [], onImageClick }) => {
 			return (
 				// <View key={`${uri}${index}`} style={styles.imgWrapper}>
 				<TouchableHighlight key={`${uri}${index}`} style={{ width: windowWidth }} onPress={() => onImageClick(urls)}>
-					<Image
-						style={{ width: windowWidth, height: calculatedHeight, marginBottom: 10 }}
-						resizeMode="cover"
-						source={{ uri }}
-					/>
+					<View>
+						<Image
+							style={{ width: windowWidth, height: calculatedHeight, marginBottom: 10 }}
+							resizeMode="cover"
+							source={{ uri }}
+						/>
+					</View>
 				</TouchableHighlight>
 				// </View>
 			)
@@ -27,11 +30,20 @@ export const ImageGrid = ({ navigation, photos = [], onImageClick }) => {
 	return (
 		<ScrollView
 			ref={ref => (this.scrollView = ref)}
-			onContentSizeChange={(contentWidth, contentHeight) => {
+			/* onContentSizeChange={(contentWidth, contentHeight) => {
 				this.scrollView.scrollToEnd({ animated: true })
-			}}
+			}} */
 		>
-			<View style={styles.container}>{images ? images : null}</View>
+			<View style={styles.container}>
+				{images ? (
+					<View>
+						{images}
+						<Button type="ghost" disabled={!isNextPageAvailable} onClick={onLoadMoreClick} inline style={{ margin: 8 }}>
+							{isNextPageAvailable ? 'LOAD MORE' : "That's all folks!"}
+						</Button>
+					</View>
+				) : null}
+			</View>
 		</ScrollView>
 	)
 }

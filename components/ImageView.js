@@ -10,7 +10,7 @@ const ImageViewer = ({ navigation: { state: { params } } }) => {
 	return (
 		<View>
 			<Image source={{ uri }} resizeMode="contain" style={style.image} />
-			<Button style={style.button} icon="down" onClick={() => onDownloadClick(uri)}>
+			<Button style={style.button} icon="down" onClick={() => onDownloadClick(downloadURI)}>
 				Download
 			</Button>
 			<WhiteSpace />
