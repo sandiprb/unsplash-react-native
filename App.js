@@ -3,20 +3,31 @@ import { StackNavigator } from 'react-navigation'
 
 import Home from './components/Home'
 import SplashScreen from './components/SplashScreen'
+import ImageViewer from './components/ImageView'
+
+const commonNavigationOptions = {
+	header: null,
+	headerMode: 'none',
+}
 
 const RootNavigator = StackNavigator({
 	SplashScreen: {
 		screen: SplashScreen,
 		navigationOptions: ({ navigation }) => ({
-			header: null,
-			headerMode: 'none',
+			...commonNavigationOptions,
 		}),
 	},
 	Home: {
 		screen: Home,
 		navigationOptions: ({ navigation }) => ({
-			header: null,
-			headerMode: 'none',
+			...commonNavigationOptions,
+		}),
+	},
+	ImageViewer: {
+		title: 'ImageViewer',
+		screen: ImageViewer,
+		navigationOptions: ({ navigation }) => ({
+			...commonNavigationOptions,
 		}),
 	},
 })

@@ -1,11 +1,10 @@
 import React from 'react'
-import { StyleSheet, Text, View,} from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
 import { SearchBar, Button, WhiteSpace, WingBlank, ActivityIndicator } from 'antd-mobile'
 import { ImageGrid } from './ImageGrid'
 
 import { getPhotoByKeyword } from '../utils/Unsplash'
-
 
 export default class Home extends React.Component {
 	constructor(props) {
@@ -41,7 +40,10 @@ export default class Home extends React.Component {
 		this.getPhotos()
 	}
 
-	handleImageClick = imgSrc => {}
+	handleImageClick = imgSrc => {
+		const { navigation } = this.props
+		navigation.navigate('ImageViewer', imgSrc)
+	}
 
 	render() {
 		const { query, photos, isLoading, currentQuery, isNextPageAvailable } = this.state
@@ -64,12 +66,10 @@ export default class Home extends React.Component {
 				<WingBlank />
 
 				{photosLoaded ? (
-					<Text style={styles.loadedText}>
-						{`Found ${photos.length} results for ${currentQuery}`}
-					</Text>
+					<Text style={styles.loadedText}>{`Found ${photos.length} results for ${currentQuery}`}</Text>
 				) : null}
 
-				{photosLoaded ? <ImageGrid photos={photos} /> : null}
+				{photosLoaded ? <ImageGrid photos={photos} onImageClick={this.handleImageClick} /> : null}
 
 				{photosLoaded ? (
 					<Button

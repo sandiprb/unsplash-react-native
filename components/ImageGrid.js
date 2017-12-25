@@ -1,16 +1,19 @@
 import React from 'react'
-import { View, Image, Text, StyleSheet, ScrollView, Dimensions } from 'react-native'
+import { View, Image, Text, StyleSheet, ScrollView, Dimensions, TouchableHighlight } from 'react-native'
 import { windowWidth } from '../utils/constants'
 
-export const ImageGrid = ({ photos = [] }) => {
+export const ImageGrid = ({ navigation, photos = [], onImageClick }) => {
 	const styles = ImageGridStyles
 	const images =
 		photos.length &&
 		photos.map((obj, index) => {
-			const { urls: { thumb: uri } } = obj
+			const { urls } = obj
+			const { thumb: uri } = urls
 			return (
 				<View key={`${uri}${index}`} style={styles.imgWrapper}>
-					<Image style={styles.img} resizeMode="cover" source={{ uri }} />
+					<TouchableHighlight onPress={() => onImageClick(urls)}>
+						<Image style={styles.img} resizeMode="cover" source={{ uri }} />
+					</TouchableHighlight>
 				</View>
 			)
 		})
