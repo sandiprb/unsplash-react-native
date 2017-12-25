@@ -11,12 +11,12 @@ const commonNavigationOptions = {
 }
 
 const RootNavigator = StackNavigator({
-	// Splash: {
-	// 	screen: SplashScreen,
-	// 	navigationOptions: ({ navigation }) => ({
-	// 		...commonNavigationOptions,
-	// 	}),
-	// },
+	Splash: {
+		screen: SplashScreen,
+		navigationOptions: ({ navigation }) => ({
+			...commonNavigationOptions,
+		}),
+	},
 	Home: {
 		screen: Home,
 		navigationOptions: ({ navigation }) => ({

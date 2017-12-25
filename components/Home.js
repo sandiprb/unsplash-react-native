@@ -14,7 +14,7 @@ export default class Home extends React.Component {
 			isLoading: false,
 			nextPage: 1,
 			photos: [],
-			query: 'Mumbai',
+			query: '',
 		}
 	}
 

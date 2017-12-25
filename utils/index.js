@@ -11,11 +11,22 @@ export const saveToCameraRoll = async imageURI => {
 		await CameraRoll.saveToCameraRoll(res.path())
 		Alert.alert('Success', 'Photo added to camera roll!')
 	} else {
+		console.log('hit')
 		try {
-			await CameraRoll.saveToCameraRoll(imageURI)
-			Alert.alert('Success', 'Photo added to camera roll!')
+			CameraRoll.saveToCameraRoll(imageURI)
+				.then(() => {
+					Alert.alert('Success', 'Photo added to camera roll!')
+				})
+				.catch(e => {
+					console.error(error)
+				})
 		} catch (error) {
-			console.log(error)
+			console.warn(error)
 		}
 	}
+}
+
+export const getAspectRatioHeight = (actualWidth, actualHeight, newWidth) => {
+	const newHeight = actualHeight / actualWidth * newWidth
+	return newHeight
 }
