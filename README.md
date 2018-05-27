@@ -1,4 +1,6 @@
-This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
+# A React Native App for  [Unsplash](https://unsplash.com/)
+
+This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app) and later ejected.
 
 ## Available Scripts
 
